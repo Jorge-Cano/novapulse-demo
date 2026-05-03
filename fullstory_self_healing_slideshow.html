@@ -1,0 +1,261 @@
+
+<style>
+.deck { font-family: var(--font-sans); }
+.slides-wrap { position: relative; min-height: 380px; }
+.slide { display: none; padding: 2rem 0 1rem; }
+.slide.active { display: block; }
+.slide-num { font-size: 11px; color: var(--color-text-tertiary); font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 1rem; }
+.slide-tag { display: inline-block; font-size: 11px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; padding: 0.25rem 0.75rem; border-radius: 20px; margin-bottom: 1rem; }
+.tag-purple { background: #EEEDFE; color: #3C3489; }
+.tag-teal { background: #E1F5EE; color: #085041; }
+.tag-coral { background: #FAECE7; color: #712B13; }
+.tag-blue { background: #E6F1FB; color: #0C447C; }
+.tag-amber { background: #FAEEDA; color: #633806; }
+.tag-green { background: #EAF3DE; color: #27500A; }
+@media (prefers-color-scheme: dark) {
+  .tag-purple { background: #26215C; color: #CECBF6; }
+  .tag-teal { background: #04342C; color: #9FE1CB; }
+  .tag-coral { background: #4A1B0C; color: #F5C4B3; }
+  .tag-blue { background: #042C53; color: #B5D4F4; }
+  .tag-amber { background: #412402; color: #FAC775; }
+  .tag-green { background: #173404; color: #C0DD97; }
+}
+.slide h2 { font-size: 22px; font-weight: 500; color: var(--color-text-primary); margin-bottom: 0.5rem; line-height: 1.2; }
+.slide .sub { font-size: 14px; color: var(--color-text-secondary); margin-bottom: 1.5rem; line-height: 1.6; max-width: 560px; }
+.boxes { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 10px; margin: 1rem 0; }
+.box { background: var(--color-background-secondary); border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-md); padding: 0.85rem 1rem; }
+.box-icon { font-size: 16px; margin-bottom: 0.4rem; }
+.box-title { font-size: 13px; font-weight: 500; color: var(--color-text-primary); margin-bottom: 0.2rem; }
+.box-desc { font-size: 12px; color: var(--color-text-secondary); line-height: 1.4; }
+.flow { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; margin: 1.25rem 0; }
+.flow-step { background: var(--color-background-secondary); border: 0.5px solid var(--color-border-tertiary); border-radius: 6px; padding: 0.5rem 0.85rem; font-size: 13px; font-weight: 500; color: var(--color-text-primary); white-space: nowrap; }
+.flow-arrow { color: var(--color-text-tertiary); font-size: 14px; flex-shrink: 0; }
+.code-block { background: var(--color-background-secondary); border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-md); padding: 1rem; font-family: var(--font-mono); font-size: 12px; color: var(--color-text-secondary); line-height: 1.6; overflow-x: auto; margin: 1rem 0; }
+.bug-list { display: flex; flex-direction: column; gap: 8px; margin: 1rem 0; }
+.bug-item { display: flex; align-items: flex-start; gap: 10px; padding: 0.75rem; background: var(--color-background-secondary); border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-md); }
+.bug-badge { font-size: 11px; font-weight: 700; padding: 0.2rem 0.55rem; border-radius: 4px; white-space: nowrap; flex-shrink: 0; margin-top: 1px; }
+.badge-danger { background: #FCEBEB; color: #A32D2D; }
+.badge-warn { background: #FAEEDA; color: #633806; }
+@media (prefers-color-scheme: dark) {
+  .badge-danger { background: #501313; color: #F7C1C1; }
+  .badge-warn { background: #412402; color: #FAC775; }
+}
+.bug-text { font-size: 13px; color: var(--color-text-secondary); line-height: 1.4; }
+.bug-text strong { color: var(--color-text-primary); font-weight: 500; }
+.timeline { display: flex; flex-direction: column; gap: 0; margin: 1rem 0; }
+.t-row { display: flex; gap: 12px; }
+.t-line { display: flex; flex-direction: column; align-items: center; }
+.t-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; margin-top: 3px; }
+.t-connector { width: 1px; flex: 1; background: var(--color-border-tertiary); min-height: 18px; margin-top: 4px; }
+.t-content { padding-bottom: 16px; flex: 1; }
+.t-label { font-size: 12px; font-weight: 500; color: var(--color-text-primary); }
+.t-desc { font-size: 12px; color: var(--color-text-tertiary); }
+.nav-row { display: flex; align-items: center; gap: 8px; margin-top: 1.5rem; padding-top: 1rem; border-top: 0.5px solid var(--color-border-tertiary); }
+.nav-btn { background: var(--color-background-secondary); border: 0.5px solid var(--color-border-secondary); border-radius: 6px; padding: 0.4rem 1rem; font-size: 13px; font-weight: 500; color: var(--color-text-primary); cursor: pointer; }
+.nav-btn:hover { background: var(--color-background-primary); }
+.nav-btn:disabled { opacity: 0.35; cursor: default; }
+.dots { display: flex; gap: 6px; flex: 1; justify-content: center; }
+.dot { width: 6px; height: 6px; border-radius: 50%; background: var(--color-border-secondary); cursor: pointer; transition: background 0.2s; }
+.dot.on { background: var(--color-text-primary); }
+</style>
+
+<div class="deck">
+<div class="slides-wrap">
+
+<!-- SLIDE 1 -->
+<div class="slide active" id="s1">
+  <div class="slide-num">01 / 06</div>
+  <div class="slide-tag tag-purple">The Problem</div>
+  <h2>Users suffer in silence.<br>Until Fullstory.</h2>
+  <p class="sub">Traditional monitoring tells you what crashed. Fullstory tells you how users felt before it crashed — every rage click, every dead end, every moment of frustration.</p>
+  <div class="boxes">
+    <div class="box">
+      <div class="box-icon">🖱</div>
+      <div class="box-title">Rage clicks</div>
+      <div class="box-desc">Users frantically clicking a broken button</div>
+    </div>
+    <div class="box">
+      <div class="box-icon">☠</div>
+      <div class="box-title">Dead clicks</div>
+      <div class="box-desc">Clicks that land on invisible or overlapped elements</div>
+    </div>
+    <div class="box">
+      <div class="box-icon">⚠</div>
+      <div class="box-title">Console errors</div>
+      <div class="box-desc">JS exceptions thrown during real user sessions</div>
+    </div>
+    <div class="box">
+      <div class="box-icon">👻</div>
+      <div class="box-title">Invisible UI</div>
+      <div class="box-desc">Buttons that blend into the background</div>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 2 -->
+<div class="slide" id="s2">
+  <div class="slide-num">02 / 06</div>
+  <div class="slide-tag tag-teal">Fullstory as Infrastructure</div>
+  <h2>Not just analytics —<br>computer vision for your app.</h2>
+  <p class="sub">FullCapture records every DOM event, network call, console log, and pixel. It's a complete behavioral dataset — the training data for AI that fixes your product.</p>
+  <div class="boxes">
+    <div class="box">
+      <div class="box-title">FullCapture</div>
+      <div class="box-desc">Every event, captured automatically — no tagging required</div>
+    </div>
+    <div class="box">
+      <div class="box-title">Session Replay</div>
+      <div class="box-desc">Visual playback of exactly what users experienced</div>
+    </div>
+    <div class="box">
+      <div class="box-title">Data Export API</div>
+      <div class="box-desc">Raw session data piped into your AI pipeline</div>
+    </div>
+    <div class="box">
+      <div class="box-title">Alerts + Webhooks</div>
+      <div class="box-desc">Real-time triggers when thresholds are breached</div>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 3 -->
+<div class="slide" id="s3">
+  <div class="slide-num">03 / 06</div>
+  <div class="slide-tag tag-coral">The Demo App</div>
+  <h2>NovaPulse has intentional bugs —<br>here's what Fullstory will catch.</h2>
+  <p class="sub">Four deliberate issues are built into the demo, each one a realistic bug type that real products ship to production.</p>
+  <div class="bug-list">
+    <div class="bug-item">
+      <span class="bug-badge badge-danger">Dead click</span>
+      <div class="bug-text"><strong>Export button</strong> — looks active, has no onclick handler. Every click goes nowhere. Fullstory detects rapid repeated clicks.</div>
+    </div>
+    <div class="bug-item">
+      <span class="bug-badge badge-danger">Console error</span>
+      <div class="bug-text"><strong>Filter Tags input</strong> — calls <code>processTagFilter()</code> which doesn't exist. ReferenceError fires on every keystroke.</div>
+    </div>
+    <div class="bug-item">
+      <span class="bug-badge badge-warn">Invisible UI</span>
+      <div class="bug-text"><strong>Submit button</strong> — background color identical to its container. Users can't see it, rage-click the surrounding area.</div>
+    </div>
+    <div class="bug-item">
+      <span class="bug-badge badge-warn">Z-index overlap</span>
+      <div class="bug-text"><strong>Manage Billing</strong> — a transparent div sits above the button, intercepting all clicks before they reach the handler.</div>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 4 -->
+<div class="slide" id="s4">
+  <div class="slide-num">04 / 06</div>
+  <div class="slide-tag tag-blue">The Self-Healing Loop</div>
+  <h2>Frustration detected →<br>fix deployed in minutes.</h2>
+  <p class="sub">A Node.js script (heal.js) connects Fullstory signals to Claude AI, which analyzes the source code and generates a targeted fix.</p>
+  <div class="flow">
+    <div class="flow-step">User frustration</div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-step">Fullstory alert</div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-step">heal.js runs</div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-step">Claude analyzes</div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-step">Fix written</div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-step">PR opened</div>
+  </div>
+  <div class="code-block">node heal.js
+
+📡 Fetching Fullstory signals...
+🤖 Asking Claude to analyze and fix...
+  ✅ Fixed: dead-click on #broken-export-btn
+  ✅ Fixed: invisible #invisible-submit button
+  ✅ Fixed: z-index blocking #manage-billing-btn
+🚀 PR opened: github.com/you/repo/pull/42</div>
+</div>
+
+<!-- SLIDE 5 -->
+<div class="slide" id="s5">
+  <div class="slide-num">05 / 06</div>
+  <div class="slide-tag tag-amber">Deployment Pipeline</div>
+  <h2>PR merged → live in 60 seconds.<br>GitHub Actions handles it.</h2>
+  <p class="sub">Once Claude's PR is opened, a reviewer (or auto-merge rule) merges it. GitHub Actions immediately deploys to GitHub Pages.</p>
+  <div class="timeline">
+    <div class="t-row">
+      <div class="t-line"><div class="t-dot" style="background:#3B8BD4"></div><div class="t-connector"></div></div>
+      <div class="t-content"><div class="t-label">heal.js opens Pull Request</div><div class="t-desc">Branch: fix/fullstory-ai-heal-[timestamp]</div></div>
+    </div>
+    <div class="t-row">
+      <div class="t-line"><div class="t-dot" style="background:#3B8BD4"></div><div class="t-connector"></div></div>
+      <div class="t-content"><div class="t-label">Review (or auto-merge)</div><div class="t-desc">Claude's PR includes full explanation of each fix</div></div>
+    </div>
+    <div class="t-row">
+      <div class="t-line"><div class="t-dot" style="background:#639922"></div><div class="t-connector"></div></div>
+      <div class="t-content"><div class="t-label">GitHub Actions triggers</div><div class="t-desc">deploy.yml detects merge to main branch</div></div>
+    </div>
+    <div class="t-row">
+      <div class="t-line"><div class="t-dot" style="background:#639922"></div><div class="t-connector"></div></div>
+      <div class="t-content"><div class="t-label">Pages deploy completes</div><div class="t-desc">~60 seconds · zero infrastructure needed</div></div>
+    </div>
+    <div class="t-row">
+      <div class="t-line"><div class="t-dot" style="background:#1D9E75"></div></div>
+      <div class="t-content"><div class="t-label">Fullstory confirms resolution</div><div class="t-desc">Rage clicks drop, errors stop, users succeed</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 6 -->
+<div class="slide" id="s6">
+  <div class="slide-num">06 / 06</div>
+  <div class="slide-tag tag-green">The Pitch</div>
+  <h2>Fullstory isn't a reporting tool.<br>It's AI infrastructure.</h2>
+  <p class="sub">When Fullstory becomes the sensing layer for an AI feedback loop, it transforms from "analytics" into the nervous system of a self-healing product.</p>
+  <div class="boxes">
+    <div class="box">
+      <div class="box-title">Without Fullstory</div>
+      <div class="box-desc">AI fixes code it can't see being broken in production</div>
+    </div>
+    <div class="box">
+      <div class="box-title">With Fullstory</div>
+      <div class="box-desc">AI sees the exact moment of failure, with full behavioral context</div>
+    </div>
+    <div class="box">
+      <div class="box-title">The result</div>
+      <div class="box-desc">A closed loop: observe → reason → fix → verify</div>
+    </div>
+    <div class="box">
+      <div class="box-title">The message</div>
+      <div class="box-desc">Fullstory is the data layer that makes AI agents production-ready</div>
+    </div>
+  </div>
+</div>
+
+</div><!-- slides-wrap -->
+
+<div class="nav-row">
+  <button class="nav-btn" id="prev-btn" onclick="go(-1)" disabled>← Prev</button>
+  <div class="dots" id="dots"></div>
+  <button class="nav-btn" id="next-btn" onclick="go(1)">Next →</button>
+</div>
+</div>
+
+<script>
+let cur = 0;
+const total = 6;
+const dotsEl = document.getElementById('dots');
+for (let i = 0; i < total; i++) {
+  const d = document.createElement('div');
+  d.className = 'dot' + (i === 0 ? ' on' : '');
+  d.onclick = () => goTo(i);
+  dotsEl.appendChild(d);
+}
+function goTo(n) {
+  document.getElementById('s'+(cur+1)).classList.remove('active');
+  dotsEl.children[cur].classList.remove('on');
+  cur = n;
+  document.getElementById('s'+(cur+1)).classList.add('active');
+  dotsEl.children[cur].classList.add('on');
+  document.getElementById('prev-btn').disabled = cur === 0;
+  document.getElementById('next-btn').disabled = cur === total - 1;
+}
+function go(d) { if (cur+d >= 0 && cur+d < total) goTo(cur+d); }
+</script>
