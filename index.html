@@ -393,9 +393,9 @@
 
     /* BUG 2: Invisible submit — button blends into background */
     #invisible-submit {
-      background: var(--accent);
-      color: #fff;
-      border: 1px solid var(--accent);
+      background: var(--accent2);
+      color: #0a0b0f;
+      border: 2px solid var(--accent2);
       padding: 0.75rem 1.75rem;
       border-radius: 8px;
       font-family: var(--sans);
@@ -404,7 +404,8 @@
       cursor: pointer;
       width: 100%;
       margin-top: 1rem;
-      transition: opacity 0.2s;
+      transition: opacity 0.2s, transform 0.15s;
+      box-shadow: 0 0 20px rgba(0, 217, 166, 0.3);
     }
     #invisible-submit:hover { opacity: 0.9; }
 
@@ -618,7 +619,7 @@
       <div style="color:var(--muted);font-size:0.85rem">Download this month's analytics as CSV</div>
     </div>
     <!-- BUG: onclick is missing — this looks like a working button but does nothing. Fullstory will catch rage clicks here. -->
-    <button id="broken-export-btn" data-tip="Export to CSV" onclick="FS.event('Export Clicked', { format: 'CSV' }); alert('Exporting CSV...'); console.log('[NovaPulse] Export initiated');">
+    <button id="broken-export-btn" data-tip="Export to CSV" onclick="handleExport()">
       Export Data ↓
     </button>
   </div>
@@ -784,10 +785,21 @@
     document.getElementById('modal').classList.remove('open');
   }
 
-  // ── BUG 1: Export button has NO handler — Fullstory catches rage clicks ──
-  // intentionally left empty
+  // ── Export handler function ──
+  function handleExport() {
+    FS.event('Export Clicked', { format: 'CSV' });
+    const btn = document.getElementById('broken-export-btn');
+    btn.textContent = 'Exporting...';
+    btn.disabled = true;
+    setTimeout(() => {
+      btn.textContent = 'Export Data ↓';
+      btn.disabled = false;
+      alert('CSV exported successfully!');
+      console.log('[NovaPulse] Export completed');
+    }, 1500);
+  }
 
-  // ── FIX: processTagFilter function now defined ──
+  // ── Tag filter function ──
   function processTagFilter(value) {
     FS.event('Tag Filter Input', { query: value });
     console.log('[NovaPulse] Filtering tags:', value);
