@@ -139,7 +139,7 @@ const fs = require('fs');
 const FULLSTORY_API_KEY = process.env.FULLSTORY_API_KEY;
 const ANTHROPIC_API_KEY = process.env.ANTHROPIC_API_KEY;
 const GITHUB_TOKEN = process.env.GITHUB_TOKEN;
-const REPO = 'YOUR_USERNAME/novapulse-demo'; // ← update this
+const REPO = 'jorge-cano.github.io/novapulse-demo'; // ← update this
 
 async function getFullstorySignals() {
   console.log('\n📡 Fetching Fullstory signals...\n');
