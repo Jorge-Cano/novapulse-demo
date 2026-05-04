@@ -393,21 +393,17 @@
 
     /* BUG 2: Invisible submit — button blends into background */
     #invisible-submit {
-      background: var(--accent2);
-      color: #0a0b0f;
-      border: 2px solid var(--accent2);
+      background: #111318; /* same as surface — invisible */
+      color: #111318;      /* text invisible too */
+      border: 1px solid #1a1e28;
       padding: 0.75rem 1.75rem;
       border-radius: 8px;
       font-family: var(--sans);
       font-size: 0.9rem;
-      font-weight: 700;
       cursor: pointer;
       width: 100%;
       margin-top: 1rem;
-      transition: opacity 0.2s, transform 0.15s;
-      box-shadow: 0 0 20px rgba(0, 217, 166, 0.3);
     }
-    #invisible-submit:hover { opacity: 0.9; }
 
     /* BUG 3: Input that throws console error on type */
     #rage-input {
@@ -619,7 +615,7 @@
       <div style="color:var(--muted);font-size:0.85rem">Download this month's analytics as CSV</div>
     </div>
     <!-- BUG: onclick is missing — this looks like a working button but does nothing. Fullstory will catch rage clicks here. -->
-    <button id="broken-export-btn" data-tip="Export to CSV" onclick="handleExport()">
+    <button id="broken-export-btn" data-tip="Export to CSV">
       Export Data ↓
     </button>
   </div>
@@ -649,7 +645,7 @@
         <input
           id="rage-input"
           type="text"
-          placeholder="Enter tags to filter…"
+          placeholder="Type here to trigger a console error…"
           oninput="processTagFilter(this.value)"
         />
       </div>
@@ -785,25 +781,12 @@
     document.getElementById('modal').classList.remove('open');
   }
 
-  // ── Export handler function ──
-  function handleExport() {
-    FS.event('Export Clicked', { format: 'CSV' });
-    const btn = document.getElementById('broken-export-btn');
-    btn.textContent = 'Exporting...';
-    btn.disabled = true;
-    setTimeout(() => {
-      btn.textContent = 'Export Data ↓';
-      btn.disabled = false;
-      alert('CSV exported successfully!');
-      console.log('[NovaPulse] Export completed');
-    }, 1500);
-  }
+  // ── BUG 1: Export button has NO handler — Fullstory catches rage clicks ──
+  // intentionally left empty
 
-  // ── Tag filter function ──
-  function processTagFilter(value) {
-    FS.event('Tag Filter Input', { query: value });
-    console.log('[NovaPulse] Filtering tags:', value);
-  }
+  // ── BUG 2: This function is called from oninput but it's actually missing ──
+  // processTagFilter is NOT defined — throws ReferenceError in console
+  // Fullstory FullCapture records this error automatically
 
   // ── BUG 3: Billing button handler (never fires due to z-index overlay) ──
   document.getElementById('manage-billing-btn').addEventListener('click', function() {
