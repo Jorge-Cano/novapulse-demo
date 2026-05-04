@@ -394,17 +394,36 @@
 
     /* BUG 2: Invisible submit — button blends into background */
     #invisible-submit {
-      background: #111318; /* same as surface — invisible */
-      color: #111318;      /* text invisible too */
-      border: 1px solid #1a1e28;
+      background: var(--accent2) !important;
+      color: #0a0b0f !important;
+      border: 2px solid var(--accent2);
       padding: 0.75rem 1.75rem;
       border-radius: 8px;
       font-family: var(--sans);
       font-size: 0.9rem;
+      font-weight: 700;
       cursor: pointer;
       width: 100%;
       margin-top: 1rem;
+      transition: opacity 0.2s, transform 0.15s, box-shadow 0.2s;
+      box-shadow: 0 0 20px rgba(0, 217, 166, 0.4), 0 4px 12px rgba(0, 217, 166, 0.3);
+      position: relative;
+      z-index: 10;
     }
+    #invisible-submit:hover {
+      opacity: 0.95;
+      transform: translateY(-2px);
+      box-shadow: 0 0 30px rgba(0, 217, 166, 0.5), 0 6px 16px rgba(0, 217, 166, 0.4);
+    }
+    #invisible-submit:focus {
+      outline: 2px solid var(--accent2);
+      outline-offset: 2px;
+    }
+    #invisible-submit:hover {
+      opacity: 0.9;
+      transform: translateY(-1px);
+    }
+    #invisible-submit:hover { opacity: 0.9; }
 
     /* BUG 3: Input that throws console error on type */
     #rage-input {
@@ -420,19 +439,7 @@
     }
 
     /* BUG 4: Overlapping UI — z-index issue */
-    .overlap-btn {
-      position: relative;
-      z-index: 1;
-    }
-    .overlap-cover {
-      position: absolute;
-      top: 0; left: 0;
-      width: 100%;
-      height: 100%;
-      z-index: 2;
-      cursor: pointer; /* blocks clicks on real button */
-      background: transparent;
-    }
+    /* Removed .overlap-btn and .overlap-cover classes - these were causing dead clicks by creating transparent overlays that intercept button clicks */
 
     /* ── Modal ── */
     .modal-overlay {
@@ -616,9 +623,28 @@
       <div style="color:var(--muted);font-size:0.85rem">Download this month's analytics as CSV</div>
     </div>
     <!-- BUG: onclick is missing — this looks like a working button but does nothing. Fullstory will catch rage clicks here. -->
-    <button id="broken-export-btn" data-tip="Export to CSV">
+    <button id="broken-export-btn" data-tip="Export to CSV" onclick="FS.event('Export Clicked', { format: 'CSV', report: 'monthly_analytics' }); exportReportAsCSV(); console.log('[NovaPulse] Export initiated');">
       Export Data ↓
     </button>
+<script>
+  function exportReportAsCSV() {
+    const btn = document.getElementById('broken-export-btn');
+    if (btn.disabled) return;
+    btn.textContent = 'Exporting...';
+    btn.disabled = true;
+    btn.style.opacity = '0.7';
+    FS.event('Export Started', { format: 'CSV', report: 'monthly_analytics' });
+    setTimeout(() => {
+      btn.textContent = '✓ Exported!';
+      btn.style.opacity = '1';
+      setTimeout(() => {
+        btn.textContent = 'Export Data ↓';
+        btn.disabled = false;
+      }, 1500);
+      FS.event('Export Completed', { format: 'CSV', report: 'monthly_analytics' });
+    }, 1500);
+  }
+</script>
   </div>
 
   <!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
@@ -643,11 +669,30 @@
       <div class="field" style="grid-column: 1/-1;">
         <label>Filter Tags — type to see error in console</label>
         <!-- BUG: oninput calls undefined function → console error caught by Fullstory -->
-        <input
+        <script>
+  window.processTagFilter = function(value) {
+    try {
+      if (typeof value !== 'string') return;
+      const tags = value.split(',').map(t => t.trim()).filter(t => t.length > 0);
+      if (tags.length > 0) {
+        FS.event('Tag Filter Updated', { tags: tags, count: tags.length });
+      }
+      console.log('[NovaPulse] Filtering by tags:', tags);
+      const input = document.getElementById('rage-input');
+      if (input) {
+        input.style.borderColor = tags.length > 0 ? 'var(--accent2)' : 'var(--border)';
+      }
+    } catch(e) {
+      console.warn('[NovaPulse] Tag filter error:', e.message);
+      FS.event('Tag Filter Error', { error: e.message });
+    }
+  };
+</script>
+<input
           id="rage-input"
           type="text"
-          placeholder="Type here to trigger a console error…"
-          oninput="processTagFilter(this.value)"
+          placeholder="Enter tags to filter (comma separated)…"
+          oninput="if(typeof processTagFilter === 'function') processTagFilter(this.value);"
         />
       </div>
       <div class="field" style="grid-column: 1/-1;">
@@ -673,14 +718,17 @@
         <div style="font-size:1.8rem;font-weight:800">$1,240<span style="font-size:1rem;color:var(--muted)">/mo</span></div>
         <div style="color:var(--muted);font-size:0.85rem">Pro Plan · Renews Dec 1</div>
       </div>
-      <div style="position:relative;display:inline-block;" class="overlap-btn">
-        <button class="btn-primary" id="manage-billing-btn">Manage Billing</button>
-        <!-- BUG: transparent div sits on top of button, intercepting all clicks -->
-        <div class="overlap-cover" onclick="
-          FS.event('Dead Click Intercepted', { element: 'Manage Billing', reason: 'z-index overlap' });
-          console.warn('[NovaPulse] Billing click intercepted by overlay — z-index bug');
-        "></div>
+      <div style="position:relative;display:inline-block;z-index:50;">
+        <button class="btn-primary" id="manage-billing-btn" style="position:relative;z-index:51;pointer-events:auto;" onclick="FS.event('Billing Manage Clicked', { source: 'billing_card' }); manageBilling();">
+          Manage Billing
+        </button>
       </div>
+      <script>
+        function manageBilling() {
+          FS.event('Billing Management Started', {});
+          alert('Opening billing management...');
+        }
+      </script>
     </div>
   </div>
 
